@@ -1,36 +1,39 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Book Klub</title>
+		<title>Book Club</title>
 		<link href="/public/css/main.css" rel="stylesheet" type="text/css">
 	</head>
 
 	<body>
 		<nav class="navbar navbar-default">
-          <div class="navbar-header navbar-brand">
-          	<a href="\" style="text-decoration: none;">Book Klub</a>
-          </div>
-          <div class="navbar-form navbar-right">
-          	<span id="display-name"></span>
-          	<a href="/logout"><button id="logout" class="btn btn-success">Logout</button></a>
-          </div>
+        	<div class="navbar-header navbar-brand">
+          		<a href="\" style="text-decoration: none;">Book Club</a>
+        	</div>
+      		<ul class="nav navbar-nav">
+        		<li id="all-books"><a href="#">All Books</a></li>
+        		<li id="my-books"><a href="#">My Books</a></li>
+        		<li id="find-book"><a href="#">Find Book</a></li>
+        		<li id="settings"><a href="#">Settings</a></li>        		
+        		<li><a href="/logout">Logout</a></li>
+        	</ul>
 	    </nav>
 	    
 	    <div class="container-fluid">
-			<div class="panel panel-default">
+			<div class="panel panel-default" id="book-search">
 				<div class="panel-heading">
 					<h3 class="panel-title">Book search:</h3>
 				</div>
 				<div class="panel-body">
 					<table><tr>
 						<td class="spacer"><input type="text" placeholder="Book title, series and/or author"></input></td>
-						<td><button type="submit" class="btn find-books">Find</button></td>
+						<td><button type="submit" class="btn" id="find">Find</button></td>
 					</tr></table>
 				</div>
 			</div>
 			<div class="panel panel-default">
 				<div class="panel-heading">
-				 	<h3 class="panel-title">Books found:</h3>
+				 	<h3 class="panel-title">Books:</h3>
 				</div>
 				<div class="panel-body">
 					<p><span id="results"></span></p>
@@ -39,8 +42,7 @@
 		</div>	  
 		
 		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-		<script type="text/javascript" src="/common/ajax-functions.js"></script>
-		<script type="text/javascript" src="/controllers/userController.client.js"></script>
+		<script type="text/javascript" src="/controllers/controller.client.js"></script>
 	</body>
 
 </html>

@@ -1,7 +1,7 @@
 'use strict';
 
 var path = process.cwd();
-var ClickHandler = require(path + '/app/controllers/clickHandler.server.js');
+var BookHandler = require(path + '/app/controllers/bookHandler.server.js');
 
 module.exports = function (app, passport) {
 
@@ -13,7 +13,7 @@ module.exports = function (app, passport) {
 		}
 	}
 
-	var clickHandler = new ClickHandler();
+	var bookHandler = new BookHandler();
 
 	app.route('/')
 		.get(isLoggedIn, function (req, res) {
@@ -45,8 +45,8 @@ module.exports = function (app, passport) {
 			failureRedirect: '/login'
 		}));
 
-	app.route('/api/:id/clicks')
-		.get(isLoggedIn, clickHandler.getClicks)
-		.post(isLoggedIn, clickHandler.addClick)
-		.delete(isLoggedIn, clickHandler.resetClicks);
+	app.route('/api/books/:bookid')
+		.get(isLoggedIn, bookHandler.getBooks)
+		.post(isLoggedIn, bookHandler.addBook)
+		.delete(isLoggedIn, bookHandler.removeBook);
 };
