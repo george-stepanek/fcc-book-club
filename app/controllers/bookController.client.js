@@ -10,9 +10,9 @@ function strip(html) {
     const pageSize = 5;
     var offset = 0;
 
-    $('input').keypress(function(e){
+    $('#search-string').keypress(function(e){
         if(e.keyCode == 13)
-            $('.find-books').click();
+            $('#find').click();
     });
     
     function refreshBooks () {
