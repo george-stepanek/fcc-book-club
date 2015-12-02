@@ -13,36 +13,59 @@
       		<ul class="nav navbar-nav">
         		<li id="all-books"><a href="#">All Books</a></li>
         		<li id="my-books"><a href="#">My Books</a></li>
-        		<li id="find-book"><a href="#">Find Book</a></li>
+        		<li id="find-book"><a href="#">Add Book</a></li>
         		<li id="settings"><a href="#">Settings</a></li>        		
         		<li><a href="/logout">Logout</a></li>
         	</ul>
 	    </nav>
 	    
-	    <div class="container-fluid">
+		<div class="modal fade" id="settings-modal" tabindex="-1" role="dialog">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title">Settings</h4>
+		      </div>
+		      <div class="modal-body">
+				<table width="100%">
+					<tr><td>ID<br/><input type="text" id="user-id" disabled></input><br/>&nbsp;</td></tr>
+					<tr><td>Display name<br/><input type="text" id="user-display-name" disabled></input><br/>&nbsp;</td></tr>
+					<tr><td>Full name<br/><input type="text" id="user-full-name"></input><br/>&nbsp;</td></tr>
+					<tr><td>City<br/><input type="text" id="user-city"></input><br/>&nbsp;</td></tr>
+					<tr><td>State/Region<br/><input type="text" id="user-region"></input><br/>&nbsp;</td></tr>
+				</table>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-primary" id="save-settings">Save changes</button>
+		      </div>
+		    </div><!-- /.modal-content -->
+		  </div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->    
+	    
+		<div class="container-fluid">
 			<div class="panel panel-default" id="book-search">
 				<div class="panel-heading">
 					<h3 class="panel-title">Book search:</h3>
 				</div>
 				<div class="panel-body">
 					<table><tr>
-						<td class="spacer"><input type="text" placeholder="Book title, series and/or author"></input></td>
+						<td class="spacer"><input type="text" id="search-string" placeholder="Book title, series and/or author"></input></td>
 						<td><button type="submit" class="btn" id="find">Find</button></td>
 					</tr></table>
 				</div>
 			</div>
 			<div class="panel panel-default">
-				<div class="panel-heading">
-				 	<h3 class="panel-title">Books:</h3>
-				</div>
 				<div class="panel-body">
 					<p><span id="results"></span></p>
 				</div>
 			</div>	
-		</div>	  
+		</div>
 		
 		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-		<script type="text/javascript" src="/controllers/controller.client.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="/controllers/userController.client.js"></script>
+		<script type="text/javascript" src="/controllers/bookController.client.js"></script>
 	</body>
 
 </html>
