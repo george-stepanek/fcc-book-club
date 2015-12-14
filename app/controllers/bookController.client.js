@@ -1,6 +1,6 @@
 'use strict';
 
-function strip(html) {
+function stripTags(html) {
    var tmp = document.createElement("DIV");
    tmp.innerHTML = html;
    return tmp.textContent || tmp.innerText || "";
@@ -21,7 +21,9 @@ function strip(html) {
         } else if ($('#my-books').hasClass("active")) {
             displayBooks("my");
         } else if ($('#all-books').hasClass("active")) {
-            displayBooks("all");
+            displayBooks("all");        
+        } else if ($('#book-requests').hasClass("active")) {
+            displayBooks("request");
         }
     }
 
@@ -34,13 +36,24 @@ function strip(html) {
             output += '<div class="col-sm-3"><a target="_blank" href="' + results.items[i].volumeInfo.infoLink + 
                           '"><h4>' + results.items[i].volumeInfo.title + '</h4></a><h5>' + 
                           (results.items[i].volumeInfo.authors != null ? results.items[i].volumeInfo.authors.join('<br/>') : '') + '</h5></div>';
-            output += '<div class="col-sm-5">' + strip(results.items[i].volumeInfo.description).substring(0, 500) + '&hellip;</div>';
+            output += '<div class="col-sm-5">' + stripTags(results.items[i].volumeInfo.description).substring(0, 500) + '&hellip;</div>';
+            
             if( $('#find-book').hasClass("active") ) {
                 output += '<div class="col-sm-1"><button class="btn add-book" id="' + results.items[i].id + '">Add</button></div>';
             } else if ($('#my-books').hasClass("active")) {
                 output += '<div class="col-sm-1"><button class="btn remove-book" id="' + results.items[i].refId + '">Remove</button></div>';                
+            } else if ($('#all-books').hasClass("active")) {
+                output += '<div class="col-sm-1"><button class="btn request-book" id="' + results.items[i].refId + 
+                    '"' + (results.items[i].requestedBy ? ' disabled' : '') + '>Request</button></div>'; 
+            } else if ($('#book-requests').hasClass("active")) {
+                output += '<div class="col-sm-2"><button class="btn btn-success accept-request" id="' + results.items[i].refId + '">Yes</button>' +
+                    '<button class="btn btn-danger reject-request" id="' + results.items[i].refId + '">No</button></div>';
             }
-            output += '<div class="col-sm-1" style="width:70px; text-align:right;"><span>(' + (offset + i + 1) + ')</span></div></div>';
+            
+            if ($('#book-requests').hasClass("active") == false) {
+                output += '<div class="col-sm-1" style="width:70px; text-align:right;"><span>(' + (offset + i + 1) + ')</span></div>';
+            }
+            output += '</div>';
         }
         
         output += '<div class="row">' +
@@ -76,6 +89,27 @@ function strip(html) {
                 refreshBooks();
             }});
         });
+        
+        $('.request-book').click( function () {
+            var url = window.location.origin + '/api/books/' + this.id;
+            $.ajax({url: url, type: 'PUT', success: function (results) { 
+                refreshBooks();
+            }});
+        }); 
+        
+        $('.accept-request').click( function () {
+            var url = window.location.origin + '/api/request/book/' + this.id;
+            $.post(url, function (results) { 
+                refreshBooks();
+            });
+        });   
+        
+        $('.reject-request').click( function () {
+            var url = window.location.origin + '/api/request/book/' + this.id;
+            $.ajax({url: url, type: 'DELETE', success: function (results) { 
+                refreshBooks();
+            }});
+        });
     }
     
     function getDataForBooks(results) {
@@ -86,6 +120,7 @@ function strip(html) {
 			    '?key=AIzaSyA3SsOL_50qgKjEelYhQKLflaoUtVxJOuU&projection=lite';
 			$.ajax({url: url, async: false, success: function(result) {
 			    result["refId"] = results[i].id;
+			    result["requestedBy"] = results[i].requestedBy;
 				books.items.push(result);
 			}});
 		}
@@ -111,7 +146,13 @@ function strip(html) {
         $('#book-search').hide();
         displayBooks("all");
     });
-
+    
+     $('#book-requests').click( function () {
+        initialiseMode(this);
+        $('#book-search').hide();
+        displayBooks("request");
+    });
+    
     $('#my-books').click( function () {
         initialiseMode(this);
         $('#book-search').hide();
@@ -131,4 +172,9 @@ function strip(html) {
     });
     
     $('#find-book').click();
+    
+/*    ReactDOM.render(
+        <p>Hello World!</p>,
+        document.getElementById('content')
+    ); */
 })();

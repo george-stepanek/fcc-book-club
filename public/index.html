@@ -14,6 +14,7 @@
         		<li id="all-books"><a href="#">All Books</a></li>
         		<li id="my-books"><a href="#">My Books</a></li>
         		<li id="find-book"><a href="#">Add Book</a></li>
+        		<li id="book-requests"><a href="#">Book Requests</a></li>
         		<li id="settings"><a href="#">Settings</a></li>        		
         		<li><a href="/logout">Logout</a></li>
         	</ul>
@@ -56,16 +57,19 @@
 				</div>
 			</div>
 			<div class="panel panel-default">
-				<div class="panel-body">
-					<p><span id="results"></span></p>
-				</div>
+				<div class="panel-body" id=results></div>
 			</div>	
 		</div>
 		
-		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+		<div id="content"></div>
+		
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react.js"></script>
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.0/react-dom.js"></script>
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.js"></script>
+	    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="/controllers/userController.client.js"></script>
-		<script type="text/javascript" src="/controllers/bookController.client.js"></script>
+		<script type="text/babel" src="/controllers/bookController.client.js"></script>
 	</body>
 
 </html>

@@ -52,9 +52,17 @@ module.exports = function (app, passport) {
 		.get(isLoggedIn, bookHandler.getAllBooks);
 
 	app.route('/api/my/books')
-		.get(isLoggedIn, bookHandler.getAllBooks);
+		.get(isLoggedIn, bookHandler.getMyBooks);
+		
+	app.route('/api/request/books')
+		.get(isLoggedIn, bookHandler.getRequestedBooks);
+		
+	app.route('/api/request/book/:bookid')
+		.post(isLoggedIn, bookHandler.acceptRequest)
+		.delete(isLoggedIn, bookHandler.denyRequest);
 		
 	app.route('/api/books/:bookid')
 		.post(isLoggedIn, bookHandler.addBook)
-		.delete(isLoggedIn, bookHandler.removeBook);
+		.delete(isLoggedIn, bookHandler.removeBook)
+		.put(isLoggedIn, bookHandler.requestBook);
 };

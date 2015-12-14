@@ -6,6 +6,7 @@ var Schema = mongoose.Schema;
 var Book = new Schema({
 	userid: String,
 	bookid: String,
+	requestedBy: String,
 	id: { type:Schema.ObjectId, default: mongoose.Types.ObjectId }
 });
 
