@@ -28,6 +28,11 @@ function stripTags(html) {
     }
 
    function layoutBooks (results) {
+    /*  ReactDOM.render(
+            <p>Hello World!</p>,
+            document.getElementById('content')
+        ); */
+    
         var output = "";
 
         for(var i = 0; i < results.items.length; i++) {
@@ -172,9 +177,4 @@ function stripTags(html) {
     });
     
     $('#find-book').click();
-    
-/*    ReactDOM.render(
-        <p>Hello World!</p>,
-        document.getElementById('content')
-    ); */
 })();

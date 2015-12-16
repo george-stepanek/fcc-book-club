@@ -1,7 +1,11 @@
 @import url(//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css);
 @import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css);
-@import url(http://css-spinners.com/css/spinner/spinner.css);
+@import url(//fonts.googleapis.com/css?family=Righteous);
 
+.navbar-header {
+    font-family: Righteous, sans-serif;	
+    font-size: 200%;
+}
 input {
 	width: 100%;
 	padding: 5px;
