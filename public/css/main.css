@@ -41,4 +41,8 @@ h4 {
 	text-align: center; 
 	margin: auto;
 }
+.row-index {
+	width: 70px; 
+	text-align: right;
+}
 

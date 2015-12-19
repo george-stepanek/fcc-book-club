@@ -11,8 +11,9 @@ function stripTags(html) {
     var offset = 0;
 
     $('#search-string').keypress(function(e){
-        if(e.keyCode == 13)
+        if(e.keyCode == 13) {
             $('#find').click();
+        }
     });
     
     function refreshBooks () {
@@ -26,13 +27,94 @@ function stripTags(html) {
             displayBooks("request");
         }
     }
-
-   function layoutBooks (results) {
-    /*  ReactDOM.render(
-            <p>Hello World!</p>,
-            document.getElementById('content')
-        ); */
     
+    var Book = React.createClass({
+        render: function() {
+            var submitButton = '';
+            if( $('#find-book').hasClass("active") ) {
+                submitButton =  (
+                    <div class="col-sm-1">
+                        <button className="btn add-book" id={this.props.book.id}>Add</button>
+                    </div>
+                );
+            } else if ($('#my-books').hasClass("active")) {
+                submitButton =  (
+                    <div className="col-sm-1">
+                        <button className="btn remove-book" id={this.props.book.refId}>Remove</button>
+                    </div>
+                );
+            } else if ($('#all-books').hasClass("active")) {
+                submitButton = (
+                    <div class="col-sm-1">
+                        <button className="btn request-book" id={this.props.book.refId} disabled={this.props.book.requestedBy}>Request</button>
+                    </div>
+                );
+            } else if ($('#book-requests').hasClass("active")) {
+                submitButton = (
+                    <div class="col-sm-2">
+                        <button className="btn btn-success accept-request" id={this.props.book.refId}>Yes</button>
+                        <button className="btn btn-danger reject-request" id={this.props.book.refId}>No</button>
+                    </div>
+                );
+            }
+            
+            return (
+                <div className="row">
+                    <div className="col-sm-2">
+                        <img src={this.props.book.volumeInfo.imageLinks.smallThumbnail}></img>
+                    </div>
+                    <div className="col-sm-3">
+                        <a target="_blank" href={this.props.book.volumeInfo.infoLink}>
+                            <h4>{this.props.book.volumeInfo.title}</h4>
+                        </a>
+                        <h5>{this.props.book.volumeInfo.authors != null ? this.props.book.volumeInfo.authors.join(', ') : ''}</h5>
+                    </div>
+                    <div className="col-sm-5">
+                        {stripTags(this.props.book.volumeInfo.description).substring(0, 500) + '…'}
+                    </div>
+                    {submitButton}
+                    <div className="col-sm-1 row-index">
+                        <span>({'' + (offset + this.props.index + 1)})</span>
+                    </div>
+                </div>
+            );
+        }
+    });
+    
+    var BooksPanel = React.createClass({
+        render: function() {
+            var bookRows = this.props.books.items.map(function(book, index) {
+                return (
+                    <Book book={book} index={index} />
+                );
+            });
+            return (
+                <div>
+                    {bookRows}
+                    <div className="row">
+                        <div className="col-sm-1">
+                            <button className="btn get-prev" disabled={offset <= 0}>
+                                <span className="glyphicon glyphicon-triangle-left" ></span> Prev
+                            </button>
+                        </div>
+                        <div className="col-sm-9"></div>
+                        <div className="col-sm-1">
+                            <button className="btn get-next" disabled={offset >= this.props.books.totalItems - pageSize}>
+                                Next <span className="glyphicon glyphicon-triangle-right"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+    });
+
+    function layoutBooks (results) {
+        ReactDOM.render(
+            <BooksPanel books={results} />,
+            document.getElementById('content')
+        );
+/*    
         var output = "";
 
         for(var i = 0; i < results.items.length; i++) {
@@ -69,7 +151,7 @@ function stripTags(html) {
                 '>Next <span class="glyphicon glyphicon-triangle-right"></span></button></div></div>';
          
         $('#results').html(output);
-          
+*/          
         $('.get-prev').click( function () {
             offset -= pageSize;
             refreshBooks();
@@ -139,7 +221,7 @@ function stripTags(html) {
     }
     
     function displayBooks(whose) {
-        $('#results').html('<div class="center-this"><i class="fa fa-spinner fa-pulse fa-5x"></i></div>');
+        //$('#results').html('<div class="center-this"><i class="fa fa-spinner fa-pulse fa-5x"></i></div>');
         var url = window.location.origin + '/api/' + whose + '/books';
         $.get(url, function (results) {
             layoutBooks(getDataForBooks(results));
@@ -176,5 +258,5 @@ function stripTags(html) {
         $.get(url, layoutBooks);
     });
     
-    $('#find-book').click();
+    $('#my-books').click();
 })();
