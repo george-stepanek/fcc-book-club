@@ -30,10 +30,17 @@ function stripTags(html) {
     
     var Book = React.createClass({
         render: function() {
+            var imageThumb = '';
+            if(this.props.book.volumeInfo.imageLinks != null) {
+                imageThumb = (
+                    <img src={this.props.book.volumeInfo.imageLinks.smallThumbnail}></img>
+                );
+            }
+            
             var submitButton = '';
             if( $('#find-book').hasClass("active") ) {
                 submitButton =  (
-                    <div class="col-sm-1">
+                    <div className="col-sm-1">
                         <button className="btn add-book" id={this.props.book.id}>Add</button>
                     </div>
                 );
@@ -45,15 +52,24 @@ function stripTags(html) {
                 );
             } else if ($('#all-books').hasClass("active")) {
                 submitButton = (
-                    <div class="col-sm-1">
+                    <div className="col-sm-1">
                         <button className="btn request-book" id={this.props.book.refId} disabled={this.props.book.requestedBy}>Request</button>
                     </div>
                 );
             } else if ($('#book-requests').hasClass("active")) {
                 submitButton = (
-                    <div class="col-sm-2">
+                    <div className="col-sm-2">
                         <button className="btn btn-success accept-request" id={this.props.book.refId}>Yes</button>
                         <button className="btn btn-danger reject-request" id={this.props.book.refId}>No</button>
+                    </div>
+                );
+            }
+            
+            var indexer = '';
+            if ($('#book-requests').hasClass("active") == false) {
+                indexer = (
+                    <div className="col-sm-1 row-index">
+                        <span>({offset + this.props.index + 1})</span>
                     </div>
                 );
             }
@@ -61,7 +77,7 @@ function stripTags(html) {
             return (
                 <div className="row">
                     <div className="col-sm-2">
-                        <img src={this.props.book.volumeInfo.imageLinks.smallThumbnail}></img>
+                        {imageThumb}
                     </div>
                     <div className="col-sm-3">
                         <a target="_blank" href={this.props.book.volumeInfo.infoLink}>
@@ -73,15 +89,21 @@ function stripTags(html) {
                         {stripTags(this.props.book.volumeInfo.description).substring(0, 500) + '…'}
                     </div>
                     {submitButton}
-                    <div className="col-sm-1 row-index">
-                        <span>({'' + (offset + this.props.index + 1)})</span>
-                    </div>
+                    {indexer}
                 </div>
             );
         }
     });
     
     var BooksPanel = React.createClass({
+        handleGetNext: function () {
+            offset += pageSize;
+            refreshBooks();
+        },
+        handleGetPrev: function () {
+            offset -= pageSize;
+            refreshBooks();
+        },
         render: function() {
             var bookRows = this.props.books.items.map(function(book, index) {
                 return (
@@ -89,17 +111,17 @@ function stripTags(html) {
                 );
             });
             return (
-                <div>
+                <div className="panel-body">
                     {bookRows}
                     <div className="row">
                         <div className="col-sm-1">
-                            <button className="btn get-prev" disabled={offset <= 0}>
+                            <button className="btn get-prev" onClick={this.handleGetPrev} disabled={offset <= 0}>
                                 <span className="glyphicon glyphicon-triangle-left" ></span> Prev
                             </button>
                         </div>
                         <div className="col-sm-9"></div>
                         <div className="col-sm-1">
-                            <button className="btn get-next" disabled={offset >= this.props.books.totalItems - pageSize}>
+                            <button className="btn get-next" onClick={this.handleGetNext} disabled={offset >= this.props.books.totalItems - pageSize}>
                                 Next <span className="glyphicon glyphicon-triangle-right"></span>
                             </button>
                         </div>
@@ -112,56 +134,9 @@ function stripTags(html) {
     function layoutBooks (results) {
         ReactDOM.render(
             <BooksPanel books={results} />,
-            document.getElementById('content')
+            document.getElementById('results')
         );
-/*    
-        var output = "";
-
-        for(var i = 0; i < results.items.length; i++) {
-            output += '<div class="row"><div class="col-sm-2">' + (results.items[i].volumeInfo.imageLinks != null ? '<img src="' + 
-                          results.items[i].volumeInfo.imageLinks.smallThumbnail + '"></img>' : '') + '</div>';
-            output += '<div class="col-sm-3"><a target="_blank" href="' + results.items[i].volumeInfo.infoLink + 
-                          '"><h4>' + results.items[i].volumeInfo.title + '</h4></a><h5>' + 
-                          (results.items[i].volumeInfo.authors != null ? results.items[i].volumeInfo.authors.join('<br/>') : '') + '</h5></div>';
-            output += '<div class="col-sm-5">' + stripTags(results.items[i].volumeInfo.description).substring(0, 500) + '&hellip;</div>';
-            
-            if( $('#find-book').hasClass("active") ) {
-                output += '<div class="col-sm-1"><button class="btn add-book" id="' + results.items[i].id + '">Add</button></div>';
-            } else if ($('#my-books').hasClass("active")) {
-                output += '<div class="col-sm-1"><button class="btn remove-book" id="' + results.items[i].refId + '">Remove</button></div>';                
-            } else if ($('#all-books').hasClass("active")) {
-                output += '<div class="col-sm-1"><button class="btn request-book" id="' + results.items[i].refId + 
-                    '"' + (results.items[i].requestedBy ? ' disabled' : '') + '>Request</button></div>'; 
-            } else if ($('#book-requests').hasClass("active")) {
-                output += '<div class="col-sm-2"><button class="btn btn-success accept-request" id="' + results.items[i].refId + '">Yes</button>' +
-                    '<button class="btn btn-danger reject-request" id="' + results.items[i].refId + '">No</button></div>';
-            }
-            
-            if ($('#book-requests').hasClass("active") == false) {
-                output += '<div class="col-sm-1" style="width:70px; text-align:right;"><span>(' + (offset + i + 1) + ')</span></div>';
-            }
-            output += '</div>';
-        }
-        
-        output += '<div class="row">' +
-            '<div class="col-sm-1"><button class="btn get-prev"' + (offset <= 0 ? ' disabled' : '') + '>' +
-                '<span class="glyphicon glyphicon-triangle-left"></span> Prev</button></div>' +
-            '<div class="col-sm-9"></div>' +
-            '<div class="col-sm-1"><button class="btn get-next"' + (offset >= results.totalItems - pageSize ? 'disabled' : '') +
-                '>Next <span class="glyphicon glyphicon-triangle-right"></span></button></div></div>';
-         
-        $('#results').html(output);
-*/          
-        $('.get-prev').click( function () {
-            offset -= pageSize;
-            refreshBooks();
-        });
-          
-        $('.get-next').click( function () {
-            offset += pageSize;
-            refreshBooks();
-        });
-      
+     
         $('.add-book').click( function () {
             var url = window.location.origin + '/api/books/' + this.id;
             $.post(url, function (results) {
@@ -202,6 +177,7 @@ function stripTags(html) {
     function getDataForBooks(results) {
        	var books = { totalItems: results.length, items: [] };
        	var max = results.length > offset + pageSize ? offset + pageSize : results.length;
+       	
 		for(var i = offset; i < max; i++) {
 			var url = 'https://www.googleapis.com/books/v1/volumes/' + results[i].bookid + 
 			    '?key=AIzaSyA3SsOL_50qgKjEelYhQKLflaoUtVxJOuU&projection=lite';
@@ -221,7 +197,10 @@ function stripTags(html) {
     }
     
     function displayBooks(whose) {
-        //$('#results').html('<div class="center-this"><i class="fa fa-spinner fa-pulse fa-5x"></i></div>');
+        ReactDOM.render(
+            <div className="center-this"><i className="fa fa-spinner fa-pulse fa-5x"></i></div>,
+            document.getElementById('results')
+        );
         var url = window.location.origin + '/api/' + whose + '/books';
         $.get(url, function (results) {
             layoutBooks(getDataForBooks(results));
@@ -249,7 +228,10 @@ function stripTags(html) {
     $('#find-book').click( function () {
         initialiseMode(this);
         $('#book-search').show();
-        $('#results').empty();
+        ReactDOM.render(
+            <div className="panel-body"></div>,
+            document.getElementById('results')
+        );
     });
            
     $('#find').click( function () {
